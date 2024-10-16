@@ -44,6 +44,20 @@ def get_friends(user_id: str) -> list | None:
         return response.json()['response']['items']
     except KeyError:
         return None
+    
+def collect_friends(user_id: str) -> list:
+    user_friends = get_friends(user_id)
+
+    if user_friends is None:
+            # print(f'Ошибка при получении друзей id{user_id}.')
+            return
+    
+    if not user_friends:
+            # print(f'У id{user_id} список друзей пуст.')
+            return
+    
+    print(f'Пользователь id{user_id}')
+    return user_friends
 
 
 people = {
@@ -52,25 +66,24 @@ people = {
     # 198658352: 'Смелкин Никита'
 }
 
-
 if __name__ == "__main__":
-    
+
     for id in people:
-        new_person_friends = get_friends(id)
 
-        if new_person_friends is None:
-            print(f'Ошибка при получении друзей id{id}.')
-            continue
+        friends1 = collect_friends(id) # Друзья участника группы
+        Person(id=id, friends=friends1) # Добавление участника группы и его друзей
 
-        new_person = Person(id=id, friends=new_person_friends)
+        for friend1 in friends1:
+            friends2 = collect_friends(friend1) # Друзья друзей участника группы
 
-        for friend in new_person_friends:
-            friends = get_friends(friend)
-
-            if friends is None or friends == []:
-                print(f'Ошибка при получении друзей id{friend}.')
+            if friends2 is not None:
+                Person(id=friend1, friends=friends2) # Добавление друзей участника группы и их друзей
+            else:
                 continue
 
-            Person(id=friend, friends=friends)
-        
+            for friend2 in friends2:
+                print(f'Друг друга: id{friend2}')
+                Person(id=friend2, friends=[]) # Добавление друзей друзей участника группы
+
+    print(len(Person.data)) 
     Person.jsonify('data.json')
