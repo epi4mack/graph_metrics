@@ -7,8 +7,10 @@ with open('data.json', 'r') as f:
 
 G = nx.Graph()
 
+
 for user in data:
     user_id = user['id']
+
     friends = user['friends']
     
     for friend_id in friends:
@@ -40,8 +42,6 @@ eigenvector_results = {user_id: eigenvector.get(user_id, 0) for user_id in peopl
 print('\nЦентральность собственного вектора:')
 for id, result in eigenvector_results.items():
     print(f'\t{people[id]}: {result}')
-
-print()
 
 plt.figure(figsize=(8, 8))
 
